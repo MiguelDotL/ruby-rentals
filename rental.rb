@@ -1,28 +1,28 @@
 class Rental
-  include Enumerable
+  #
+  class << self # The `eigenclass` is an anonymous instance of the class `Class`
+                # attached to a defined object, in which instance methods are
+                # used as singleton methods, belonging to said defined object.
+    #
+    def define_getters(attributes) # replaces attr_reader for each csv column header
+      attributes.each do |attribute| # ------ for each |attribute| in attributes array
+        define_method(attribute.to_sym) do #  define a method on our Rental Class called |:attribute|
+          # --------------------------------- which returns us the value of @|attribute| instance variable
+          return instance_variable_get("@#{attribute}")
+        end
+      end
+    end
 
-  attr_reader :rental_id, :building_id, :rent, :bedrooms, :bathrooms, :size_sqft, :min_to_subway, :floor, :building_age_yrs, :no_fee, :has_roofdeck, :has_washer_dryer, :has_doorman, :has_elevator, :has_dishwasher, :has_patio, :has_gym, :neighborhood, :submarket, :borough
+    def define_initialize(attributes) # creates initialize method, and assigns all instance variables to args passed in
+      define_method(:initialize) do |*args| # ---- define an initialize method for each argument passed into this method
+        attributes.zip(args) do |attribute, arg| # create an array of arrays like this:  [[attribute, arg]...]
+          # -------------------------------------- create an instance variable for each @attribute = arg
+          instance_variable_set("@#{attribute}", arg)
+        end
+      end
+    end
 
-  def initialize(rental_id, building_id, rent, bedrooms, bathrooms, size_sqft, min_to_subway, floor, building_age_yrs, no_fee, has_roofdeck, has_washer_dryer, has_doorman, has_elevator, has_dishwasher, has_patio, has_gym, neighborhood, submarket, borough)
-    @rental_id = rental_id
-    @building_id = building_id
-    @rent = rent
-    @bedrooms = bedrooms
-    @bathrooms = bathrooms
-    @size_sqft = size_sqft
-    @min_to_subway = min_to_subway
-    @floor = floor
-    @building_age_yrs = building_age_yrs
-    @no_fee = no_fee
-    @has_roofdeck = has_roofdeck
-    @has_washer_dryer = has_washer_dryer
-    @has_doorman = has_doorman
-    @has_elevator = has_elevator
-    @has_dishwasher = has_dishwasher
-    @has_patio = has_patio
-    @has_gym = has_gym
-    @neighborhood = neighborhood
-    @submarket = submarket
-    @borough = borough
+    #
   end
+  #
 end
